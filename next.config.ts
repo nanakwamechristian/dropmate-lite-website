@@ -1,26 +1,29 @@
 import type { NextConfig } from "next";
 
+const repoName = "dropmate-lite-website";
+const isGitHubPages = process.env.GITHUB_ACTIONS === "true";
+
 const nextConfig: NextConfig = {
-  turbopack: { root: process.cwd() },
-  outputFileTracingRoot: process.cwd(),
-  poweredByHeader: false,
-  images: { formats: ["image/avif", "image/webp"] },
-  async headers() {
-    return [
-      {
-        source: "/(.*)",
-        headers: [
-          { key: "X-Content-Type-Options", value: "nosniff" },
-          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          { key: "X-Frame-Options", value: "DENY" },
-          {
-            key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=()",
-          },
-        ],
-      },
-    ];
+  turbopack: {
+    root: process.cwd(),
   },
+
+  poweredByHeader: false,
+
+  output: "export",
+
+  trailingSlash: true,
+
+  images: {
+    unoptimized: true,
+  },
+
+  ...(isGitHubPages
+    ? {
+        basePath: `/${repoName}`,
+        assetPrefix: `/${repoName}/`,
+      }
+    : {}),
 };
 
 export default nextConfig;

@@ -1,21 +1,28 @@
 import type { MetadataRoute } from "next";
-import { getSiteOrigin, isProductionDeployment } from "@/lib/site";
+
+export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const origin = getSiteOrigin();
-  if (!origin || !isProductionDeployment()) return [];
+  const baseUrl =
+    process.env.GITHUB_ACTIONS === "true"
+      ? "https://nanakwamechristian.github.io/dropmate-lite-website"
+      : "http://localhost:3000";
 
   return [
-    { url: new URL("/", origin).href, changeFrequency: "monthly", priority: 1 },
     {
-      url: new URL("/privacy", origin).href,
-      changeFrequency: "yearly",
-      priority: 0.3,
+      url: `${baseUrl}/`,
+      changeFrequency: "weekly",
+      priority: 1,
     },
     {
-      url: new URL("/support", origin).href,
+      url: `${baseUrl}/privacy/`,
       changeFrequency: "monthly",
-      priority: 0.6,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/support/`,
+      changeFrequency: "monthly",
+      priority: 0.7,
     },
   ];
 }

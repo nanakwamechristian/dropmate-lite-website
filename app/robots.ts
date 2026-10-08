@@ -1,15 +1,18 @@
 import type { MetadataRoute } from "next";
-import { getSiteOrigin, isProductionDeployment } from "@/lib/site";
+
+export const dynamic = "force-static";
 
 export default function robots(): MetadataRoute.Robots {
-  const origin = getSiteOrigin();
-  if (!origin || !isProductionDeployment()) {
-    return { rules: { userAgent: "*", disallow: "/" } };
-  }
+  const baseUrl =
+    process.env.GITHUB_ACTIONS === "true"
+      ? "https://nanakwamechristian.github.io/dropmate-lite-website"
+      : "http://localhost:3000";
 
   return {
-    rules: { userAgent: "*", allow: "/" },
-    sitemap: new URL("/sitemap.xml", origin).href,
-    host: origin.origin,
+    rules: {
+      userAgent: "*",
+      allow: "/",
+    },
+    sitemap: `${baseUrl}/sitemap.xml`,
   };
 }
